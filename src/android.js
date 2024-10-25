@@ -87,7 +87,11 @@ export async function openInbox(options = {}) {
   }
 
   try {
-    await NativeModules.Email.open(text, newTask);
+    if (options.app) {
+      await NativeModules.Email.openWith(options.app, newTask);
+    } else {
+      await NativeModules.Email.open(text, newTask);
+    }
   } catch (error) {
     if (error.code === "NoEmailAppsAvailable") {
       throw new EmailException("No email apps available");

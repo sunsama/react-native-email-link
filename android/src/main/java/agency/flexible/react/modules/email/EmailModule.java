@@ -88,6 +88,20 @@ public class EmailModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void openWith(String packageName, final boolean newTask, final Promise promise) {
+        Intent launchIntent = new Intent(Intent.ACTION_SENDTO);
+        launchIntent.setPackage(packageName);
+        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        if (launchIntent.resolveActivity(getCurrentActivity().getPackageManager()) != null) {
+            getCurrentActivity().startActivity(launchIntent);
+            promise.resolve("Success");
+        } else {
+            promise.reject("AppNotFound", "Application not found");
+        }
+    }
+
+    @ReactMethod
     public void composeWith(String packageName, final String title, final String to, final String subject, final String body, final String cc, final String bcc, final Promise promise) {
         Intent launchIntent = new Intent(Intent.ACTION_SENDTO);
         launchIntent.setPackage(packageName);
